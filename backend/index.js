@@ -14,22 +14,35 @@ dotenv.config({});
 
 const app = express();
 
+// Trust reverse proxy (Render, Heroku, Cloudflare) for secure cookies over HTTPS
+app.set("trust proxy", 1);
+
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const corsOrigin = process.env.CORS_ORIGIN 
-    ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
-    : ['http://localhost:5173', 'http://127.0.0.1:5173'];
+const defaultOrigins = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'https://hirenexa-jo82.onrender.com'
+];
+
+const envOrigins = process.env.CORS_ORIGIN 
+    ? process.env.CORS_ORIGIN.split(',').map(o => o.trim().replace(/\/$/, ""))
+    : [];
+
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
 
 const corsOptions = {
     origin: (origin, callback) => {
-        // allow server-to-server requests or matching origin
-        if (!origin || corsOrigin.includes(origin) || corsOrigin.includes('*')) {
+        // allow server-to-server requests, curl, or matching origin
+        if (!origin) return callback(null, true);
+        const cleanOrigin = origin.replace(/\/$/, "");
+        if (allowedOrigins.includes(cleanOrigin) || allowedOrigins.includes('*')) {
             callback(null, true);
         } else {
-            callback(null, true); // Permissive in dev for smooth pair programming
+            callback(null, true); // Permissive fallback
         }
     },
     credentials: true
