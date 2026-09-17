@@ -13,8 +13,29 @@ const applicationSchema = new mongoose.Schema({
     },
     status:{
         type:String,
-        enum:['pending', 'accepted', 'rejected'],
-        default:'pending'
+        enum:['applied', 'pending', 'under_review', 'shortlisted', 'assessment', 'interview', 'accepted', 'selected', 'rejected', 'hired'],
+        default:'applied'
+    },
+    statusHistory:[{
+        status:{ type: String },
+        updatedAt:{ type: Date, default: Date.now }
+    }],
+    interviewDate:{
+        type: Date
+    },
+    assessmentDate:{
+        type: Date
+    },
+    reminderNote:{
+        type: String,
+        default: ""
+    },
+    withdrawn:{
+        type:Boolean,
+        default:false
     }
 },{timestamps:true});
-export const Application  = mongoose.model("Application", applicationSchema);
+
+applicationSchema.index({ job: 1, applicant: 1 });
+
+export const Application = mongoose.model("Application", applicationSchema);

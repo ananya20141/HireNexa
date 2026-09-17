@@ -18,18 +18,25 @@ const Companies = () => {
         dispatch(setSearchCompanyByText(input));
     },[input]);
     return (
-        <div>
-            <Navbar />
-            <div className='max-w-6xl mx-auto my-10'>
-                <div className='flex items-center justify-between my-5'>
-                    <Input
-                        className="w-fit"
-                        placeholder="Filter by name"
-                        onChange={(e) => setInput(e.target.value)}
-                    />
-                    <Button onClick={() => navigate("/admin/companies/create")}>New Company</Button>
+        <div className="min-h-screen bg-bg flex flex-col justify-between">
+            <div>
+                <Navbar />
+                <div className='max-w-6xl mx-auto my-10 px-4'>
+                    <div className='flex items-center justify-between my-5'>
+                        <Input
+                            className="w-fit bg-surface border-surface-border text-text-primary rounded-xl"
+                            placeholder="Filter by name"
+                            onChange={(e) => setInput(e.target.value)}
+                        />
+                        <Button 
+                            className="bg-accent hover:bg-accent-hover text-white rounded-xl shadow-warm-sm"
+                            onClick={() => navigate("/recruiter/companies/create")}
+                        >
+                            New Company
+                        </Button>
+                    </div>
+                    <CompaniesTable/>
                 </div>
-                <CompaniesTable/>
             </div>
         </div>
     )

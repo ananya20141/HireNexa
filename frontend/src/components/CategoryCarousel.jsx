@@ -11,7 +11,7 @@ const category = [
     "Data Science",
     "Graphic Designer",
     "FullStack Developer"
-]
+];
 
 const CategoryCarousel = () => {
     const dispatch = useDispatch();
@@ -19,25 +19,31 @@ const CategoryCarousel = () => {
     const searchJobHandler = (query) => {
         dispatch(setSearchedQuery(query));
         navigate("/browse");
-    }
+    };
 
     return (
-        <div>
-            <Carousel className="w-full max-w-xl mx-auto my-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Carousel className="w-full max-w-xl mx-auto my-16">
                 <CarouselContent>
                     {
                         category.map((cat, index) => (
-                            <CarouselItem className="md:basis-1/2 lg-basis-1/3">
-                                <Button onClick={()=>searchJobHandler(cat)} variant="outline" className="rounded-full">{cat}</Button>
+                            <CarouselItem key={index} className="basis-1/2 sm:basis-1/3">
+                                <Button 
+                                    onClick={()=>searchJobHandler(cat)} 
+                                    variant="outline" 
+                                    className="w-full rounded-xl border border-surface-border bg-surface text-text-primary hover:text-accent hover:border-accent hover:bg-muted shadow-warm-sm transition-colors font-semibold text-xs py-2"
+                                >
+                                    {cat}
+                                </Button>
                             </CarouselItem>
                         ))
                     }
                 </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
+                <CarouselPrevious className="border-surface-border bg-surface text-text-secondary hover:text-accent hover:bg-muted" />
+                <CarouselNext className="border-surface-border bg-surface text-text-secondary hover:text-accent hover:bg-muted" />
             </Carousel>
         </div>
-    )
-}
+    );
+};
 
-export default CategoryCarousel
+export default CategoryCarousel;

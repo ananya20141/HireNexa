@@ -9,18 +9,19 @@ const useGetCompanyById = (companyId) => {
     const dispatch = useDispatch();
     useEffect(()=>{
         const fetchSingleCompany = async () => {
+            if (!companyId) return;
             try {
-                const res = await axios.get(`${COMPANY_API_END_POINT}/get/${companyId}`,{withCredentials:true});
-                console.log(res.data.company);
-                if(res.data.success){
+                const res = await axios.get(`${COMPANY_API_END_POINT}/get/${companyId}`, { withCredentials: true });
+                if (res.data.success) {
                     dispatch(setSingleCompany(res.data.company));
                 }
             } catch (error) {
-                console.log(error);
+                console.error("Fetch Single Company Error:", error?.response?.data?.message || error?.message || error);
             }
         }
         fetchSingleCompany();
-    },[companyId, dispatch])
+    }, [companyId, dispatch])
 }
+
 
 export default useGetCompanyById

@@ -47,6 +47,31 @@ const jobSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Application',
         }
-    ]
+    ],
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending'
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    isFlagged: {
+        type: Boolean,
+        default: false
+    },
+    flagReason: {
+        type: String,
+        default: ''
+    },
+    category: {
+        type: String,
+        default: 'Engineering'
+    }
 },{timestamps:true});
+
+jobSchema.index({ status: 1, isActive: 1 });
+jobSchema.index({ title: 'text', description: 'text', location: 'text' });
+
 export const Job = mongoose.model("Job", jobSchema);

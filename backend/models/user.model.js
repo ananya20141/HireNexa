@@ -20,19 +20,55 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type:String,
-        enum:['student','recruiter'],
+        enum:['student','recruiter','admin'],
         required:true
     },
+    isBlocked:{
+        type:Boolean,
+        default:false
+    },
+    savedJobs:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Job'
+    }],
     profile:{
-        bio:{type:String},
+        bio:{type:String, default:""},
         skills:[{type:String}],
-        resume:{type:String}, // URL to resume file
-        resumeOriginalName:{type:String},
+        experienceYears:{type:Number, default:0},
+        education:[{
+            degree:{type:String},
+            institution:{type:String},
+            year:{type:String}
+        }],
+        resume:{type:String, default:""}, // URL to resume file
+        resumeOriginalName:{type:String, default:""},
         company:{type:mongoose.Schema.Types.ObjectId, ref:'Company'}, 
         profilePhoto:{
             type:String,
             default:""
-        }
+        },
+        firstJobMode:{
+            type:Boolean,
+            default:false
+        },
+        githubUrl:{
+            type:String,
+            default:""
+        },
+        projects:[{
+            title:{type:String},
+            description:{type:String},
+            link:{type:String}
+        }],
+        certifications:[{
+            name:{type:String},
+            issuer:{type:String},
+            year:{type:String}
+        }],
+        roadmapProgress:[{
+            jobId:{type:mongoose.Schema.Types.ObjectId, ref:'Job'},
+            completedPhases:[{type:Number}]
+        }]
     },
 },{timestamps:true});
 export const User = mongoose.model('User', userSchema);

@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import Navbar from '../shared/Navbar'
-import { Label } from '../ui/label'
-import { Input } from '../ui/input'
-import { RadioGroup } from '../ui/radio-group'
-import { Button } from '../ui/button'
-import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { USER_API_END_POINT } from '@/utils/constant'
-import { toast } from 'sonner'
-import { useDispatch, useSelector } from 'react-redux'
-import { setLoading, setUser } from '@/redux/authSlice'
-import { Loader2 } from 'lucide-react'
+import React, { useEffect, useState } from 'react';
+import Navbar from '../shared/Navbar';
+import Footer from '../shared/Footer';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { USER_API_END_POINT } from '@/utils/constant';
+import { toast } from 'sonner';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading, setUser } from '@/redux/authSlice';
+import { Loader2, User, Briefcase, ShieldCheck, Sparkles } from 'lucide-react';
 
 const Login = () => {
     const [input, setInput] = useState({
         email: "",
         password: "",
-        role: "",
+        role: "student",
     });
-    const { loading,user } = useSelector(store => store.auth);
+    const { loading, user } = useSelector(store => store.auth);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const changeEventHandler = (e) => {
         setInput({ ...input, [e.target.name]: e.target.value });
-    }
+    };
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -38,82 +38,159 @@ const Login = () => {
             });
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
-                navigate("/");
-                toast.success(res.data.message);
+                toast.success(res.data.message || "Logged in successfully!");
+                
+                // Role-based redirect
+                if (res.data.user.role === 'admin') {
+                    navigate("/admin/dashboard");
+                } else if (res.data.user.role === 'recruiter') {
+                    navigate("/recruiter/dashboard");
+                } else {
+                    navigate("/jobs");
+                }
             }
         } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
+            console.error("Login Error:", error);
+            toast.error(error?.response?.data?.message || "Invalid credentials or role mismatch.");
         } finally {
             dispatch(setLoading(false));
         }
-    }
-    useEffect(()=>{
-        if(user){
-            navigate("/");
+    };
+
+    useEffect(() => {
+        if (user) {
+            if (user.role === 'admin') navigate("/admin/dashboard");
+            else if (user.role === 'recruiter') navigate("/recruiter/dashboard");
+            else navigate("/");
         }
-    },[])
+    }, [user, navigate]);
+
     return (
-        <div>
-            <Navbar />
-            <div className='flex items-center justify-center max-w-7xl mx-auto'>
-                <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
-                    <h1 className='font-bold text-xl mb-5'>Login</h1>
-                    <div className='my-2'>
-                        <Label>Email</Label>
-                        <Input
-                            type="email"
-                            value={input.email}
-                            name="email"
-                            onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
-                        />
-                    </div>
+        <div className="min-h-screen bg-bg flex flex-col justify-between">
+            <div>
+                <Navbar />
 
-                    <div className='my-2'>
-                        <Label>Password</Label>
-                        <Input
-                            type="password"
-                            value={input.password}
-                            name="password"
-                            onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
-                        />
-                    </div>
-                    <div className='flex items-center justify-between'>
-                        <RadioGroup className="flex items-center gap-4 my-5">
-                            <div className="flex items-center space-x-2">
-                                <Input
-                                    type="radio"
-                                    name="role"
-                                    value="student"
-                                    checked={input.role === 'student'}
-                                    onChange={changeEventHandler}
-                                    className="cursor-pointer"
-                                />
-                                <Label htmlFor="r1">Student</Label>
+                <div className="flex items-center justify-center max-w-md mx-auto my-12 px-4">
+                    <form onSubmit={submitHandler} className="w-full bg-surface border border-surface-border rounded-2xl p-6 sm:p-8 shadow-warm-md space-y-4">
+                        <div className="text-center pb-2">
+                            <h1 className="font-bold text-2xl text-text-primary">Welcome Back</h1>
+                            <p className="text-xs text-text-secondary mt-1">
+                                Sign in to access your personalized HireNexa portal.
+                            </p>
+                        </div>
+
+                        <div>
+                            <Label className="text-xs font-semibold text-text-primary">Email Address</Label>
+                            <Input
+                                type="email"
+                                value={input.email}
+                                name="email"
+                                onChange={changeEventHandler}
+                                placeholder="name@example.com"
+                                className="text-xs mt-1"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <div className="flex items-center justify-between">
+                                <Label className="text-xs font-semibold text-text-primary">Password</Label>
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <Input
-                                    type="radio"
-                                    name="role"
-                                    value="recruiter"
-                                    checked={input.role === 'recruiter'}
-                                    onChange={changeEventHandler}
-                                    className="cursor-pointer"
-                                />
-                                <Label htmlFor="r2">Recruiter</Label>
+                            <Input
+                                type="password"
+                                value={input.password}
+                                name="password"
+                                onChange={changeEventHandler}
+                                placeholder="••••••••"
+                                className="text-xs mt-1"
+                                required
+                            />
+                        </div>
+
+                        {/* Role selection tabs */}
+                        <div>
+                            <Label className="text-xs font-semibold text-text-primary block mb-2">Portal Access Role</Label>
+                            <div className="grid grid-cols-3 gap-1.5">
+                                <label className={`flex flex-col items-center justify-center gap-1 p-2 rounded-xl border cursor-pointer text-xs font-semibold transition-all ${
+                                    input.role === 'student' 
+                                        ? 'bg-accent/10 border-accent text-accent' 
+                                        : 'border-surface-border text-text-secondary hover:bg-muted'
+                                }`}>
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="student"
+                                        checked={input.role === 'student'}
+                                        onChange={changeEventHandler}
+                                        className="sr-only"
+                                    />
+                                    <User className="w-4 h-4" />
+                                    <span>Candidate</span>
+                                </label>
+
+                                <label className={`flex flex-col items-center justify-center gap-1 p-2 rounded-xl border cursor-pointer text-xs font-semibold transition-all ${
+                                    input.role === 'recruiter' 
+                                        ? 'bg-accent/10 border-accent text-accent' 
+                                        : 'border-surface-border text-text-secondary hover:bg-muted'
+                                }`}>
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="recruiter"
+                                        checked={input.role === 'recruiter'}
+                                        onChange={changeEventHandler}
+                                        className="sr-only"
+                                    />
+                                    <Briefcase className="w-4 h-4" />
+                                    <span>Recruiter</span>
+                                </label>
+
+                                <label className={`flex flex-col items-center justify-center gap-1 p-2 rounded-xl border cursor-pointer text-xs font-semibold transition-all ${
+                                    input.role === 'admin' 
+                                        ? 'bg-warning/10 border-warning text-warning' 
+                                        : 'border-surface-border text-text-secondary hover:bg-muted'
+                                }`}>
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="admin"
+                                        checked={input.role === 'admin'}
+                                        onChange={changeEventHandler}
+                                        className="sr-only"
+                                    />
+                                    <ShieldCheck className="w-4 h-4" />
+                                    <span>Admin</span>
+                                </label>
                             </div>
-                        </RadioGroup>
-                    </div>
-                    {
-                        loading ? <Button className="w-full my-4"> <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type="submit" className="w-full my-4">Login</Button>
-                    }
-                    <span className='text-sm'>Don't have an account? <Link to="/signup" className='text-blue-600'>Signup</Link></span>
-                </form>
+                        </div>
+
+                        <Button 
+                            type="submit" 
+                            disabled={loading}
+                            className="w-full bg-accent hover:bg-accent-hover text-white font-semibold py-2.5 rounded-xl shadow-warm-sm text-xs mt-2"
+                        >
+                            {loading ? (
+                                <>
+                                    <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+                                    <span>Authenticating...</span>
+                                </>
+                            ) : (
+                                <span>Sign In to HireNexa</span>
+                            )}
+                        </Button>
+
+                        <div className="text-center pt-2 text-xs text-text-secondary">
+                            Don't have an account?{' '}
+                            <Link to="/signup" className="font-semibold text-accent hover:underline">
+                                Sign up
+                            </Link>
+                        </div>
+                    </form>
+                </div>
             </div>
+            <Footer />
         </div>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;
