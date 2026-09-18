@@ -317,7 +317,7 @@ A dedicated, isolated administrative console accessible exclusively to users wit
 ```env
 PORT=3000
 CORS_ORIGIN=http://localhost:5173
-MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/careermatch?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/your_database_name?retryWrites=true&w=majority
 SECRET_KEY=your_super_secret_jwt_signing_key_32_chars_long
 CLOUD_NAME=your_cloudinary_cloud_name
 API_KEY=your_cloudinary_api_key
@@ -340,8 +340,8 @@ VITE_API_BASE_URL=http://localhost:3000
 
 ### Step 1: Clone and Navigate
 ```bash
-git clone https://github.com/aryankatiyar15/Job_Portal.git CareerMatch
-cd CareerMatch
+git clone https://github.com/ananya20141/HireNexa.git HireNexa
+cd HireNexa
 ```
 
 ### Step 2: Backend Setup
@@ -380,7 +380,7 @@ Generates optimized static assets in `frontend/dist/`.
    - Set environment variables in the host dashboard.
    - Ensure `CORS_ORIGIN` matches your deployed frontend URL.
 2. **Frontend**: Deploy to Vercel, Netlify, or Cloudflare Pages.
-   - Set `VITE_API_BASE_URL` to your production backend URL (e.g. `https://api.careermatch.com`).
+   - Set `VITE_API_BASE_URL` to your production backend URL (e.g. `https://hirenexa-backend.onrender.com`).
 3. **Database**: Use MongoDB Atlas with IP Whitelisting enabled (`0.0.0.0/0` for cloud PaaS).
 4. **Cookies in Production**: Ensure `NODE_ENV=production` so cookies set `secure: true` over HTTPS.
 
