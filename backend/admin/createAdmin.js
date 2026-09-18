@@ -19,9 +19,14 @@ const createAdmin = async () => {
         process.exit(1);
     }
 
-    // Configurable credentials with standard defaults
-    const adminEmail = (process.env.ADMIN_EMAIL || "admin@careermatch.com").toLowerCase().trim();
-    const adminPassword = process.env.ADMIN_PASSWORD || "Admin@12345";
+    const adminEmail = (process.env.ADMIN_EMAIL || "").toLowerCase().trim();
+    const adminPassword = (process.env.ADMIN_PASSWORD || "").trim();
+
+    if (!adminEmail || !adminPassword) {
+        console.error("❌ Error: Both ADMIN_EMAIL and ADMIN_PASSWORD must be configured in your environment (e.g., backend/.env).");
+        process.exit(1);
+    }
+
     const adminName = process.env.ADMIN_NAME || "System Administrator";
     const adminPhone = Number(process.env.ADMIN_PHONE) || 9876543210;
 

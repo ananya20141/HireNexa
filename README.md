@@ -313,18 +313,23 @@ A dedicated, isolated administrative console accessible exclusively to users wit
 
 ## 13. Environment Variables
 
+> [!IMPORTANT]
+> Never commit real `.env` files containing sensitive credentials to Git. Always copy from `.env.example` templates and supply your own private keys locally.
+
 ### Backend (`backend/.env`)
+Create `backend/.env` from `backend/.env.example`:
 ```env
 PORT=3000
 CORS_ORIGIN=http://localhost:5173
 MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/your_database_name?retryWrites=true&w=majority
-SECRET_KEY=your_super_secret_jwt_signing_key_32_chars_long
-CLOUD_NAME=your_cloudinary_cloud_name
-API_KEY=your_cloudinary_api_key
-API_SECRET=your_cloudinary_api_secret
+SECRET_KEY=<your_secret_key>
+CLOUD_NAME=<your_cloud_name>
+API_KEY=<your_api_key>
+API_SECRET=<your_api_secret>
 ```
 
 ### Frontend (`frontend/.env`)
+Create `frontend/.env` from `frontend/.env.example`:
 ```env
 VITE_API_BASE_URL=http://localhost:3000
 ```
@@ -348,8 +353,9 @@ cd HireNexa
 ```bash
 cd backend
 npm install
-# Create .env based on .env.example with your database and Cloudinary keys
+# Copy the example environment template to .env
 cp .env.example .env
+# Open .env and fill in your own credentials (never commit .env)
 npm run dev
 ```
 Backend will start on `http://localhost:3000`.
@@ -359,7 +365,8 @@ Open a second terminal:
 ```bash
 cd frontend
 npm install
-# Verify .env
+# Optional: copy example environment file if modifying backend endpoint
+cp .env.example .env
 npm run dev
 ```
 Frontend will launch on `http://localhost:5173`.
