@@ -5,6 +5,7 @@ const authSlice = createSlice({
     initialState: {
         loading: false,
         user: null,
+        token: null,
         savedJobs: []
     },
     reducers: {
@@ -19,11 +20,15 @@ const authSlice = createSlice({
                 state.savedJobs = [];
             }
         },
+        setToken: (state, action) => {
+            state.token = action.payload;
+        },
         setSavedJobs: (state, action) => {
             state.savedJobs = action.payload || [];
         },
         logout: (state) => {
             state.user = null;
+            state.token = null;
             state.savedJobs = [];
             state.loading = false;
         },
@@ -62,6 +67,7 @@ const authSlice = createSlice({
 export const { 
     setLoading, 
     setUser, 
+    setToken,
     setSavedJobs, 
     logout, 
     toggleSavedJobInState,

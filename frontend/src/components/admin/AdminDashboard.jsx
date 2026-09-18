@@ -19,15 +19,24 @@ import {
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const AdminDashboard = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { token } = useSelector(store => store.auth);
 
     const fetchStats = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`${ADMIN_API_END_POINT}/stats`, { withCredentials: true });
+            const headers = {};
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            const res = await axios.get(`${ADMIN_API_END_POINT}/stats`, { 
+                withCredentials: true,
+                headers
+            });
             if (res.data.success) {
                 setData(res.data);
             }
@@ -40,7 +49,7 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         fetchStats();
-    }, []);
+    }, [token]);
 
     const stats = data?.stats || {};
     const activities = data?.recentActivity || [];

@@ -9,7 +9,7 @@ import axios from 'axios';
 import { USER_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoading, setUser } from '@/redux/authSlice';
+import { setLoading, setUser, setToken } from '@/redux/authSlice';
 import { Loader2, User, Briefcase, ShieldCheck, Sparkles } from 'lucide-react';
 
 const Login = () => {
@@ -38,6 +38,9 @@ const Login = () => {
             });
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
+                if (res.data.token) {
+                    dispatch(setToken(res.data.token));
+                }
                 toast.success(res.data.message || "Logged in successfully!");
                 
                 // Role-based redirect
